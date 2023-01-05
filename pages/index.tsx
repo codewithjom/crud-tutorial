@@ -1,5 +1,15 @@
-import type { NextPage } from 'next'
+import { GetServerSideProps } from 'next'
 import { useState } from 'react'
+import { prisma } from '../lib/prisma'
+import { useRouter } from 'next/router'
+
+interface Notes {
+  notes: {
+    id: string
+    title: string
+    content: string
+  }
+}
 
 interface FormData {
   title: string
@@ -7,12 +17,18 @@ interface FormData {
   id: string
 }
 
-const Home: NextPage = () => {
+const Home = ({ notes }: Notes) => {
   const [form, setForm] = useState<FormData>({
     title: '',
     content: '',
     id: ''
   })
+
+  const router = useRouter()
+
+  const refreshData = () => {
+    router.replace(router.asPath)
+  }
 
   async function create(data: FormData) {
     try {
@@ -22,7 +38,10 @@ const Home: NextPage = () => {
           'Content-Type': 'application/json'
         },
         method: 'POST'
-      }).then(() => setForm({ title: '', content: '', id: '' }))
+      }).then(() => {
+        setForm({ title: '', content: '', id: '' })
+        refreshData()
+      })
     } catch (error) {
       console.log(error)
     }
@@ -64,9 +83,39 @@ const Home: NextPage = () => {
             Add +
           </button>
         </form>
+        <div className="w-auto min-w-[25%] max-w-min mt-[74px] mx-auto space-y-6 flex flex-col items-stretch">
+          <ul>
+            {notes.map(note => (
+              <li key={note.id} className="p-2 border-b border-gray-600">
+                <div className="justify-between flext">
+                  <div className="flex-1">
+                    <h3 className="font-bold">{note.title}</h3>
+                    <p className="text-small">{note.content}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </>
   )
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const notes = await prisma.note.findMany({
+    select: {
+      title: true,
+      id: true,
+      content: true
+    }
+  })
+
+  return {
+    props: {
+      notes
+    }
+  }
+}
