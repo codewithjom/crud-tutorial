@@ -39,7 +39,7 @@ const Home: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className="text-center text-3xl font-bold mt-8">Notes</h1>
+        <h1 className="mt-8 text-3xl font-bold text-center">Notes</h1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -52,15 +52,15 @@ const Home: NextPage = () => {
             placeholder="Title"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="border-2 rounded border-gray-600 p-1"
+            className="p-1 border-2 border-gray-600 rounded"
           />
           <textarea
             placeholder="Content"
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
-            className="border-2 rounded border-gray-600 p-1"
+            className="p-1 border-2 border-gray-600 rounded"
           />
-          <button type="submit" className="bg-blue-500 text-white rounded p-1">
+          <button type="submit" className="p-1 text-white bg-blue-500 rounded">
             Add +
           </button>
         </form>
