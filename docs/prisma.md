@@ -45,21 +45,3 @@ npx prisma studio
 npm install @prisma/client
 npx prisma generate
 ```
-
-# Prisma Client
-
-Create a folder `lib` and inside the folder create a file `prisma.ts` and add the following:
-
-```typescript
-import { PrismaClient } from '@prisma/client'
-
-declare global {
-  var prisma: PrismaClient | undefined
-}
-
-export const prisma = global.prisma || new PrismaClient()
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma
-```
-
-The code above will be used to gain access to the database whatever we want.
